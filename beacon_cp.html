@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Igual Votas · Beacon CP</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black:   #000000;
+  --white:   #F0ECE4;
+  --red:     #E63C2F;
+  --red-dk:  #C43022;
+  --gray1:   #0D0D0D;
+  --gray2:   #1A1A1A;
+  --gray3:   #2E2E2E;
+  --gray5:   #666666;
+  --gray6:   #999999;
+  --gray7:   #CCCCCC;
+  --mono:    'Space Mono', monospace;
+  --sans:    'Space Grotesk', sans-serif;
+}
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--sans);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* ── INPUT PANEL ── */
+.panel {
+  width: 100%;
+  max-width: 520px;
+}
+
+.logo {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  color: var(--gray5);
+  margin-bottom: 40px;
+  text-transform: uppercase;
+}
+.logo span { color: var(--red); }
+
+.headline {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.subhead {
+  font-size: 15px;
+  color: var(--gray5);
+  line-height: 1.5;
+  margin-bottom: 32px;
+  max-width: 400px;
+}
+
+.inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--red);
+  text-transform: uppercase;
+}
+
+input {
+  background: var(--gray2);
+  border: 1px solid var(--gray3);
+  color: var(--white);
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 700;
+  padding: 14px 16px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s;
+  letter-spacing: 0.08em;
+  -webkit-appearance: none;
+}
+
+input:focus { border-color: var(--red); }
+input::placeholder { color: var(--gray3); font-weight: 400; }
+
+.btn {
+  width: 100%;
+  background: var(--red);
+  color: var(--white);
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: none;
+  padding: 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-bottom: 12px;
+}
+.btn:hover { background: var(--red-dk); }
+
+.skip {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--gray5);
+  text-align: center;
+  line-height: 1.5;
+}
+.skip span {
+  color: var(--gray6);
+  border-bottom: 1px solid var(--gray3);
+  cursor: pointer;
+}
+.skip span:hover { color: var(--white); }
+
+/* ── BEACON RESULTADO ── */
+.beacon {
+  display: none;
+  width: 100%;
+  max-width: 520px;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.beacon-header {
+  border-top: 3px solid var(--red);
+  padding-top: 20px;
+  margin-bottom: 24px;
+}
+
+.beacon-location {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--red);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.beacon-municipio {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.beacon-estado {
+  font-size: 14px;
+  color: var(--gray6);
+  font-family: var(--mono);
+}
+
+/* DATO BRUTAL */
+.dato-brutal {
+  background: var(--gray1);
+  border-left: 3px solid var(--red);
+  padding: 20px 24px;
+  margin-bottom: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dato-brutal::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 60px;
+  background: linear-gradient(to left, var(--gray2), transparent);
+}
+
+.dato-num {
+  font-family: var(--mono);
+  font-size: 52px;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.dato-num.red { color: var(--red); }
+
+.dato-desc {
+  font-size: 14px;
+  color: var(--gray6);
+  line-height: 1.4;
+}
+
+.dato-desc strong { color: var(--white); }
+
+.dato-fuente {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--gray5);
+  margin-top: 8px;
+  text-transform: uppercase;
+}
+
+/* SEPARATOR */
+.sep {
+  height: 1px;
+  background: var(--gray2);
+  margin: 2px 0;
+}
+
+/* DIPUTADO */
+.diputado-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--red);
+  text-transform: uppercase;
+  padding: 16px 0 8px;
+}
+
+.diputado-card {
+  background: var(--gray1);
+  padding: 20px 24px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 2px;
+}
+
+.diputado-avatar {
+  width: 52px;
+  height: 52px;
+  background: var(--gray3);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gray5);
+}
+
+.diputado-info { flex: 1; }
+
+.diputado-nombre {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.diputado-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--gray5);
+  margin-bottom: 10px;
+}
+
+.partido-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-right: 6px;
+}
+
+.metricas {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px;
+  margin-bottom: 2px;
+}
+
+.metrica {
+  background: var(--gray2);
+  padding: 12px;
+  text-align: center;
+}
+
+.metrica-num {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.metrica-num.warn { color: var(--red); }
+.metrica-num.ok   { color: #4CAF50; }
+.metrica-num.neu  { color: var(--gray6); }
+
+.metrica-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--gray5);
+  text-transform: uppercase;
+}
+
+/* EL CONTRASTE — la frase que golpea */
+.contraste {
+  background: var(--gray1);
+  border-left: 3px solid var(--gray3);
+  padding: 16px 24px;
+  margin-bottom: 2px;
+}
+
+.contraste-texto {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--gray7);
+}
+
+.contraste-texto strong { color: var(--white); }
+.contraste-texto .red   { color: var(--red); }
+
+/* CTA */
+.cta-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  margin-top: 2px;
+}
+
+.cta-btn {
+  background: var(--gray2);
+  border: none;
+  color: var(--white);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-align: left;
+}
+
+.cta-btn:hover { background: var(--gray3); }
+.cta-btn.primary { background: var(--red); }
+.cta-btn.primary:hover { background: var(--red-dk); }
+
+.cta-arrow { float: right; }
+
+.reset {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--gray5);
+  text-align: center;
+  padding: 16px 0 4px;
+  cursor: pointer;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.reset:hover { color: var(--gray6); }
+
+/* GENERACION TAG */
+.gen-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  padding: 3px 10px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+/* AVISO sin CP */
+.aviso {
+  display: none;
+  background: var(--gray1);
+  border: 1px solid var(--gray3);
+  padding: 20px 24px;
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--gray6);
+  line-height: 1.6;
+  animation: fadeIn 0.3s ease;
+}
+
+.aviso strong { color: var(--white); }
+
+</style>
+</head>
+<body>
+
+<!-- PANEL DE ENTRADA -->
+<div class="panel" id="panel-input">
+
+  <div class="logo">IGUAL<span>VOTAS</span></div>
+
+  <div class="headline">Tu Congreso.<br>Tu diputado.<br>Tu realidad.</div>
+  <div class="subhead">Con tu código postal sabemos cuál de los 500 diputados te representa. Sin él, solo podemos mostrarte una lista sin nombre.</div>
+
+  <div class="inputs">
+    <div class="input-group">
+      <div class="input-label">Código postal</div>
+      <input type="tel" id="cp-input" maxlength="5" placeholder="06600" inputmode="numeric">
+    </div>
+    <div class="input-group">
+      <div class="input-label">Tu edad</div>
+      <input type="tel" id="edad-input" maxlength="2" placeholder="28" inputmode="numeric">
+    </div>
+  </div>
+
+  <button class="btn" onclick="buscar()">→ Ver mi representante</button>
+
+  <div class="skip">
+    O <span onclick="verSinCP()">continuar sin código postal</span> — verás el contenido general sin personalización
+  </div>
+
+  <div class="aviso" id="aviso-sincp">
+    <strong>Sin código postal</strong> no podemos identificar a tu diputado específico. México tiene 500 diputados federales — sin tu CP solo podemos mostrarte la lista completa. <strong>El CP no lo guardamos.</strong> Se queda en tu navegador y desaparece cuando cierras la ventana.
+  </div>
+
+</div>
+
+<!-- BEACON RESULTADO -->
+<div class="beacon" id="beacon">
+  <div class="logo">IGUAL<span>VOTAS</span></div>
+  <div id="gen-tag-container"></div>
+  <div class="beacon-header">
+    <div class="beacon-location" id="b-region"></div>
+    <div class="beacon-municipio" id="b-municipio"></div>
+    <div class="beacon-estado" id="b-estado"></div>
+  </div>
+
+  <div id="b-dato-1" class="dato-brutal"></div>
+  <div class="sep"></div>
+  <div id="b-dato-2" class="dato-brutal"></div>
+
+  <div class="diputado-label">Tu diputado federal</div>
+  <div class="diputado-card">
+    <div class="diputado-avatar" id="b-avatar"></div>
+    <div class="diputado-info">
+      <div class="diputado-nombre" id="b-nombre"></div>
+      <div class="diputado-meta" id="b-meta"></div>
+    </div>
+  </div>
+
+  <div class="metricas">
+    <div class="metrica">
+      <span class="metrica-num" id="b-iniciativas"></span>
+      <span class="metrica-label">Iniciativas<br>presentadas</span>
+    </div>
+    <div class="metrica">
+      <span class="metrica-num" id="b-aprobadas"></span>
+      <span class="metrica-label">Iniciativas<br>aprobadas</span>
+    </div>
+    <div class="metrica">
+      <span class="metrica-num" id="b-asistencia"></span>
+      <span class="metrica-label">Asistencia<br>a sesiones</span>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+
+  <div class="contraste" id="b-contraste"></div>
+
+  <div class="cta-row">
+    <button class="cta-btn primary">Ver historial completo <span class="cta-arrow">→</span></button>
+    <button class="cta-btn">Compartir este dato <span class="cta-arrow">↗</span></button>
+  </div>
+
+  <div class="reset" onclick="resetear()">← Cambiar código postal</div>
+</div>
+
+<script>
+// ── BASE DE DATOS — cargada desde cp_lookup.json
+// Fuentes: CONEVAL 2020 / CONAPO 2020 / ENOE-INEGI 2024 / INE SIGE8 2024
+let DB = null;
+let DB_LOADING = false;
+
+async function loadDB() {
+  if (DB) return DB;
+  if (DB_LOADING) {
+    await new Promise(r => setTimeout(r, 300));
+    return DB;
+  }
+  DB_LOADING = true;
+  try {
+    const res = await fetch('cp_lookup.json');
+    const raw = await res.json();
+    // Normalizar al formato que usa renderBeacon
+    DB = {};
+    for (const [cp, v] of Object.entries(raw)) {
+      DB[cp] = {
+        municipio: v.municipio,
+        estado: v.estado,
+        region: v.region,
+        distrito: v.distrito_federal,
+        zm: v.zona_metropolitana,
+        diputado: {
+          nombre: v.diputado.nombre,
+          partido: v.diputado.partido,
+          color: v.diputado.color,
+          desde: v.diputado.desde,
+          iniciales: v.diputado.iniciales
+        },
+        datos: {
+          informalidad: v.municipio_datos.informalidad_pct,
+          pobreza: v.municipio_datos.pobreza_pct,
+          marginacion: v.municipio_datos.marginacion_grado,
+          ingreso: v.municipio_datos.ingreso_mensual_promedio,
+        },
+        iniciativas: v.diputado.iniciativas,
+        aprobadas: v.diputado.aprobadas,
+        asistencia: v.diputado.asistencia,
+        tema_iniciativas: v.diputado.tema
+      };
+    }
+    console.log(`✓ cp_lookup.json cargado · ${Object.keys(DB).length} CPs`);
+    return DB;
+  } catch(e) {
+    console.warn('cp_lookup.json no disponible, usando fallback', e);
+    // Fallback mínimo para cuando el JSON no está servido
+    DB = {
+      "DEMO": {
+        municipio: "Oaxaca de Juárez", estado: "Oaxaca", region: "Región Sur-Sureste", distrito: 5, zm: null,
+        diputado: { nombre: "Ana Lilia Torres Cruz", partido: "Morena", color: "#8B0000", desde: 2024, iniciales: "AT" },
+        datos: { informalidad: 78, pobreza: 64.8, marginacion: "Alto", ingreso: 4100 },
+        iniciativas: 0, aprobadas: 0, asistencia: 69, tema_iniciativas: "pobreza o informalidad"
+      }
+    };
+    return DB;
+  }
+}
+
+const GENERACIONES = [
+  { min: 14, max: 17, nombre: "Gen Z (menor)",    color: "#E63C2F", skills: "Tienes menos de 18. En 2027 ya podrás votar — y tu diputado lo sabe." },
+  { min: 18, max: 29, nombre: "Gen Z",             color: "#E63C2F", skills: "Tu generación es el 30% de la población. El Congreso lo sabe y no le importa." },
+  { min: 30, max: 45, nombre: "Millennial",        color: "#F5A623", skills: "Tu generación tiene el mayor poder adquisitivo activo. Tus impuestos pagan este Congreso." },
+  { min: 46, max: 61, nombre: "Gen X",             color: "#7B7B7B", skills: "Ya viste la alternancia del 2000, el 2018. ¿Cuántas veces más?" },
+  { min: 62, max: 99, nombre: "Boomer",            color: "#4A90D9", skills: "Llevas más de 40 años pagando impuestos. Mereces saber en qué se gastan." },
+];
+
+function getGen(edad) {
+  return GENERACIONES.find(g => edad >= g.min && edad <= g.max) || GENERACIONES[2];
+}
+
+async function buscar() {
+  const cp = document.getElementById('cp-input').value.trim();
+  const edadVal = document.getElementById('edad-input').value.trim();
+
+  if (!cp || cp.length < 5) {
+    document.getElementById('cp-input').style.borderColor = '#E63C2F';
+    setTimeout(() => document.getElementById('cp-input').style.borderColor = '', 1500);
+    return;
+  }
+
+  // Estado de carga
+  const btn = document.querySelector('.btn');
+  const originalText = btn.textContent;
+  btn.textContent = '→ Buscando...';
+  btn.style.opacity = '0.7';
+
+  const db = await loadDB();
+  
+  btn.textContent = originalText;
+  btn.style.opacity = '1';
+
+  // Buscar CP — si no existe, mostrar el municipio más cercano conocido o fallback
+  let datos = db[cp];
+  let cpEncontrado = true;
+
+  if (!datos) {
+    // Intentar CP cercano (mismo prefijo de 4 dígitos)
+    const prefijo = cp.slice(0, 4);
+    const cercano = Object.keys(db).find(k => k.startsWith(prefijo));
+    datos = cercano ? db[cercano] : db[Object.keys(db)[0]];
+    cpEncontrado = false;
+  }
+
+  const edad = parseInt(edadVal) || 28;
+  const gen = getGen(edad);
+
+  renderBeacon(datos, gen, cp, cpEncontrado);
+}
+
+function renderBeacon(d, gen, cp, cpEncontrado = true) {
+  // Gen tag
+  const gtc = document.getElementById('gen-tag-container');
+  gtc.innerHTML = `<div class="gen-tag" style="background:${gen.color}20; color:${gen.color}; border:1px solid ${gen.color}40">${gen.nombre} · ${gen.skills}</div>`;
+
+  // Header
+  document.getElementById('b-region').textContent = d.region + ' · Distrito Federal ' + d.distrito;
+  document.getElementById('b-municipio').textContent = d.municipio;
+  document.getElementById('b-estado').textContent = d.estado + (!cpEncontrado ? ' · CP no encontrado — mostrando municipio aproximado' : '');
+
+  // Dato 1 — informalidad
+  const promNacional = 55;
+  const diff = d.datos.informalidad - promNacional;
+  const diffTexto = diff > 0
+    ? `<strong>${diff} puntos por encima</strong> del promedio nacional`
+    : `${Math.abs(diff)} puntos por debajo del promedio nacional`;
+
+  document.getElementById('b-dato-1').innerHTML = `
+    <div class="dato-num ${d.datos.informalidad >= 60 ? 'red' : ''}">${d.datos.informalidad}%</div>
+    <div class="dato-desc">trabajadores informales en ${d.municipio} — ${diffTexto} (${promNacional}%)</div>
+    <div class="dato-fuente">ENOE / INEGI 2024 · Encuesta Nacional de Ocupación y Empleo</div>
+  `;
+
+  // Dato 2 — pobreza o ingreso
+  document.getElementById('b-dato-2').innerHTML = `
+    <div class="dato-num ${d.datos.pobreza >= 50 ? 'red' : ''}">${d.datos.pobreza}%</div>
+    <div class="dato-desc">de la población de ${d.municipio} vive en situación de pobreza. Ingreso promedio mensual: <strong>$${d.datos.ingreso.toLocaleString()} MXN</strong></div>
+    <div class="dato-fuente">CONEVAL 2020 · Medición de pobreza municipal</div>
+  `;
+
+  // Diputado
+  document.getElementById('b-avatar').textContent = d.diputado.iniciales;
+  document.getElementById('b-avatar').style.background = d.diputado.color + '40';
+  document.getElementById('b-avatar').style.color = d.diputado.color;
+  document.getElementById('b-nombre').textContent = d.diputado.nombre;
+  document.getElementById('b-meta').innerHTML =
+    `<span class="partido-badge" style="background:${d.diputado.color}30; color:${d.diputado.color}">${d.diputado.partido}</span> · Distrito ${d.distrito} · Desde ${d.diputado.desde}`;
+
+  // Métricas
+  const ini = document.getElementById('b-iniciativas');
+  ini.textContent = d.iniciativas;
+  ini.className = 'metrica-num ' + (d.iniciativas === 0 ? 'warn' : d.iniciativas >= 4 ? 'ok' : 'neu');
+
+  const apr = document.getElementById('b-aprobadas');
+  apr.textContent = d.aprobadas;
+  apr.className = 'metrica-num ' + (d.aprobadas === 0 ? 'warn' : 'ok');
+
+  const asis = document.getElementById('b-asistencia');
+  asis.textContent = d.asistencia + '%';
+  asis.className = 'metrica-num ' + (d.asistencia < 75 ? 'warn' : d.asistencia >= 90 ? 'ok' : 'neu');
+
+  // La frase que golpea — adaptada por generación
+  const años = 2026 - d.diputado.desde;
+  const añosTexto = años > 0 ? `${años} año${años > 1 ? 's' : ''}` : 'un año';
+  const genNombre = gen.nombre.toLowerCase();
+
+  let contraste;
+
+  // ── GEN Z (14–29) ── Directo. Fragmentado. Sin rodeos.
+  if (genNombre.includes('gen z')) {
+    if (d.iniciativas === 0) {
+      contraste = `<strong>${d.municipio}</strong>. ${d.datos.informalidad}% trabaja sin seguridad social. <span class="red">Tu diputado: ${añosTexto} en el cargo. Cero iniciativas sobre ${d.tema_iniciativas}.</span> Su nombre. Su historial. Aquí está.`;
+    } else {
+      contraste = `<strong>${d.municipio}</strong>. ${d.datos.pobreza}% en pobreza. Tu diputado presentó ${d.iniciativas} iniciativa${d.iniciativas > 1 ? 's' : ''} en ${añosTexto}. <span class="red">${d.aprobadas === 0 ? 'Ninguna aprobada.' : `${d.aprobadas} aprobada${d.aprobadas > 1 ? 's' : ''}.`}</span> Aquí está el registro.`;
+    }
+
+  // ── MILLENNIAL (30–45) ── Consecuencias concretas. Patrimonio. IMSS. Densidad media.
+  } else if (genNombre.includes('millennial')) {
+    if (d.iniciativas === 0) {
+      contraste = `En <strong>${d.municipio}</strong>, el ${d.datos.informalidad}% de los trabajadores no tiene IMSS, no cotiza al Afore y no acumula derechos laborales. <span class="red">Tu diputado lleva ${añosTexto} en el cargo y ha presentado cero iniciativas relacionadas con ${d.tema_iniciativas}.</span> Aquí está su historial completo.`;
+    } else {
+      contraste = `En <strong>${d.municipio}</strong>, el ${d.datos.pobreza}% de la población vive en pobreza — con ingreso promedio de $${d.datos.ingreso.toLocaleString()} MXN al mes. Tu diputado presentó <strong>${d.iniciativas} iniciativa${d.iniciativas > 1 ? 's' : ''}</strong> en ${añosTexto}. <span class="red">${d.aprobadas === 0 ? 'Ninguna fue aprobada.' : `${d.aprobadas} aprobada${d.aprobadas > 1 ? 's' : ''}.`}</span> Aquí está el detalle.`;
+    }
+
+  // ── GEN X (46–61) ── Contexto histórico. Verificabilidad explícita. Más formal.
+  } else if (genNombre.includes('gen x')) {
+    if (d.iniciativas === 0) {
+      contraste = `En <strong>${d.municipio}</strong>, el ${d.datos.informalidad}% trabaja en la informalidad — sin seguridad social, sin pensión, sin derechos laborales. Este dato no es nuevo: lleva décadas sin moverse de forma significativa. <span class="red">Tu diputado lleva ${añosTexto} en el cargo. Cero iniciativas relacionadas con ${d.tema_iniciativas}.</span> Aquí está el registro verificable.`;
+    } else {
+      contraste = `En <strong>${d.municipio}</strong>, el ${d.datos.pobreza}% de la población vive en pobreza — con un ingreso promedio de $${d.datos.ingreso.toLocaleString()} MXN mensuales, sin cambios estructurales significativos desde hace dos décadas. Tu diputado ha presentado <strong>${d.iniciativas} iniciativa${d.iniciativas > 1 ? 's' : ''}</strong> en ${añosTexto}. <span class="red">${d.aprobadas === 0 ? 'Ninguna fue aprobada.' : `${d.aprobadas} aprobada${d.aprobadas > 1 ? 's' : ''}.`}</span> La metodología de calificación es pública. Aquí está.`;
+    }
+
+  // ── BOOMER / DEFAULT ── Directo, respeto a su experiencia acumulada.
+  } else {
+    if (d.iniciativas === 0) {
+      contraste = `En <strong>${d.municipio}</strong>, el ${d.datos.informalidad}% de los trabajadores opera sin seguridad social ni prestaciones. <span class="red">Tu diputado lleva ${añosTexto} representándote y no ha presentado ninguna iniciativa relacionada con ${d.tema_iniciativas}.</span> Aquí está su historial completo.`;
+    } else {
+      contraste = `En <strong>${d.municipio}</strong>, el ${d.datos.pobreza}% de la población vive en pobreza. Tu diputado presentó <strong>${d.iniciativas} iniciativa${d.iniciativas > 1 ? 's' : ''}</strong> — <span class="red">${d.aprobadas === 0 ? 'ninguna aprobada' : `${d.aprobadas} aprobada${d.aprobadas > 1 ? 's' : ''}`}</span>. Aquí está el detalle.`;
+    }
+  }
+
+  document.getElementById('b-contraste').innerHTML = `<div class="contraste-texto">${contraste}</div>`;
+
+  // Mostrar/ocultar
+  document.getElementById('panel-input').style.display = 'none';
+  const beacon = document.getElementById('beacon');
+  beacon.style.display = 'block';
+}
+
+function verSinCP() {
+  const aviso = document.getElementById('aviso-sincp');
+  aviso.style.display = aviso.style.display === 'block' ? 'none' : 'block';
+}
+
+function resetear() {
+  document.getElementById('beacon').style.display = 'none';
+  document.getElementById('panel-input').style.display = 'block';
+  document.getElementById('cp-input').value = '';
+  document.getElementById('edad-input').value = '';
+}
+
+// Enter key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') buscar();
+});
+</script>
+</body>
+</html>

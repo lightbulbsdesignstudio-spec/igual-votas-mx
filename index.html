@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Igual Votas — Conoce al Congreso que ya elegiste</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --rojo: #E63329;
+    --rojo-oscuro: #B5251B;
+    --negro: #0D0D0D;
+    --negro-medio: #1A1A1A;
+    --negro-suave: #252525;
+    --gris-oscuro: #3A3A3A;
+    --gris-medio: #6B6B6B;
+    --gris-claro: #A0A0A0;
+    --blanco-roto: #F0EDE8;
+    --blanco: #FFFFFF;
+    --amarillo: #F5C842;
+    --fuente-display: 'Barlow Condensed', sans-serif;
+    --fuente-cuerpo: 'Barlow', sans-serif;
+    --fuente-mono: 'IBM Plex Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--negro);
+    color: var(--blanco-roto);
+    font-family: var(--fuente-cuerpo);
+    font-size: 17px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ─── GRAIN OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 40px;
+    background: rgba(13,13,13,0.97); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .nav-logo {
+    font-family: var(--fuente-display);
+    font-weight: 900;
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--blanco-roto);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--rojo); }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-donar {
+    color: var(--rojo) !important;
+    border: 1px solid rgba(192,57,43,0.4);
+    padding: 6px 14px !important;
+    border-radius: 3px;
+    transition: background 0.2s ease, border-color 0.2s ease !important;
+  }
+  .nav-donar:hover {
+    background: rgba(192,57,43,0.15) !important;
+    border-color: var(--rojo) !important;
+  }
+  .nav-cta {
+    background: var(--rojo);
+    color: var(--blanco) !important;
+    padding: 6px 14px !important;
+    border-radius: 3px;
+    transition: background 0.2s ease !important;
+  }
+  .nav-cta:hover { background: #a93226 !important; }
+
+  .nav-links a {
+    font-family: var(--fuente-mono);
+    font-size: 12px;
+    color: var(--gris-claro);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--blanco-roto); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 40px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--fuente-display);
+    font-weight: 900;
+    font-size: clamp(120px, 20vw, 260px);
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.04);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-inner {
+    max-width: 1100px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-etiqueta {
+    font-family: var(--fuente-mono);
+    font-size: 12px;
+    color: var(--rojo);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.1s;
+  }
+
+  .hero-etiqueta::before {
+    content: '';
+    display: inline-block;
+    width: 32px;
+    height: 1px;
+    background: var(--rojo);
+  }
+
+  .hero-headline {
+    font-family: var(--fuente-display);
+    font-weight: 900;
+    font-size: clamp(52px, 8vw, 110px);
+    line-height: 0.92;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    color: var(--blanco-roto);
+    margin-bottom: 40px;
+  }
+
+  .hero-headline .linea-roja { color: var(--rojo); }
+  .hero-headline .linea-dim { color: var(--gris-claro); }
+
+  .hero-headline .palabra {
+    display: inline-block;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards;
+  }
+
+  .hero-sub {
+    max-width: 620px;
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--gris-claro);
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.7s;
+  }
+
+  .hero-sub strong { color: var(--blanco-roto); font-weight: 600; }
+
+  .hero-cta-group {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.9s;
+  }
+
+  .btn-primario {
+    background: var(--rojo);
+    color: var(--blanco);
+    font-family: var(--fuente-display);
+    font-weight: 700;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 16px 36px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s, transform 0.15s;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+
+  .btn-primario:hover {
+    background: var(--rojo-oscuro);
+    transform: translateY(-2px);
+  }
+
+  .hero-nota {
+    font-family: var(--fuente-mono);
+    font-size: 12px;
+    color: var(--gris-medio);
+    letter-spacing: 0.04em;
+  }
+
+  /* ─── COUNTDOWN ─── */
+  .countdown-band {
+    background: var(--rojo);
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    overflow: hidden;
+  }
+
+  .countdown-label {
+    font-family: var(--fuente-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .countdown-nums {
+    display: flex;
+    gap: 32px;
+  }
+
+  .countdown-item {
+    text-align: center;
+  }
+
+  .countdown-num {
+    font-family: var(--fuente-display);
+    font-weight: 900;
+    font-size: 48px;
+    line-height: 1;
+    color: var(--blanco);
+    display: block;
+  }
+
+  .countdown-unit {
+    font-family: var(--fuente-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .countdown-sep {
+    font-family: var(--fuente-display);
+    font-weight: 900;
+    font-size: 40px;
+    color: rgba(255,255,255,0.3);
+    line-height: 1;
+    align-self: flex-start;
+    margin-top: 4px;
+  }
+
+  .countdown-fecha {
+    font-family: var(--fuente-display);
+    font-weight: 700;
+    font-size: 20px;
+    text-transform: uppercase;
+    color: var(--blanco);
+    letter-spacing: 0.04em;
+    text-align: right;
+  }
+
+  .countdown-fecha small {
+    display: block;
+    font-family: var(--fuente-mono);
+    font-size: 11px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+
+  /* ─── SECCIÓN DATO ─── */
+  .seccion-dato {
+    padding: 100px 40px;
+    background: var(--negro-medio);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .seccion-dato::before {
+    content: 'PDF';
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: var(--fuente-display);
+    font-weight: 900;
+    font-size: 180px;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.03);
+    pointer-events: none;
+  }
+
+  .dato-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .dato-etiqueta {
+    font-family: var(--fuente-mono);
+    font-size: 11px;
+    color: var(--rojo);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .dato-etiqueta::before {
+    content: '02';
+    color: var(--gris-oscuro);
+  }
+
+  .dato-headline {
+    font-family: var(--fuente-display);
+    font-weight: 900;
+    font-size: clamp(38px, 5vw, 68px);
+    line-height: 0.95;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+
+  .dato-headline .verde { color: #4CAF7D; }
+  .dato-headline .rojo { color: var(--rojo); }
+
+  .dato-sub {
+    max-width: 540px;
+    color: var(--gris-claro);
+    margin-bottom: 60px;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* TABLA COMPARATIVA */
+  .tabla-comp {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+
+  .tabla-comp thead tr {
+    border-bottom: 1px solid var(--gris-oscuro);
+  }
+
+  .tabla-comp th {
+    font-family: var(--fuente-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gris-medio);
+    text-align: left;
+    padding: 12px 16px;
+    font-weight: 400;
+  }
+
+  .tabla-comp td {
+    padding: 16px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    vertical-align: middle;
+  }
+
+  .tabla-comp tr:hover td {
+    background: rgba(255,255,255,0.02);
+  }
+
+  .pais-nombre {
+    font-family: var(--fuente-display);
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: 0.02em;
+  }
+
+  .flag { font-size: 22px; margin-right: 10px; }
+
+  .pais-ref {
+    background: rgba(230,51,41,0.12);
+    border-left: 3px solid var(--rojo);
+  }
+
+  .pais-ref .pais-nombre { color: var(--rojo); }
+
+  .badge {
+    display: inline-block;
+    font-family: var(--fuente-mono);
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 2px;
+    letter-spacing: 0.04em;
+  }
+
+  .badge-si { background: rgba(76,175,125,0.15); color: #4CAF7D; }
+  .badge-no { background: rgba(230,51,41,0.12); color: var(--rojo); }
+  .badge-parcial { background: rgba(245,200,66,0.12); color: var(--amarillo); }
+
+  .fuente-nota {
+    margin-top: 20px;
+    font-family: var(--fuente-mono);
+    font-size: 11px;
+    color: var(--gris-medio);
+    letter-spacing: 0.04em;
+  }
+
+  /* ─── SECCIÓN QUÉ HACEMOS ─── */
+  .seccion-que {
+    padding: 100px 40px;
+    background: var(--negro);
+  }
+
+  .que-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .seccion-etiqueta {
+    font-family: var(--fuente-mono);
+    font-size: 11px;
+    color: var(--rojo);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .seccion-etiqueta::before {
+    color: var(--gris-oscuro);
+  }
+
+  .que-headline {
+    font-family: var(--fuente-display);
+    font-weight: 900;
+    font-size: clamp(36px, 4.5vw, 62px);
+    line-height: 0.95;
+    text-transform: uppercase;
+    margin-bottom: 64px;
+    max-width: 700px;
+    letter-spacing: -0.01em;
+  }
+
+  .funciones-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .funcion-card {
+    background: var(--negro-medio);
+    padding: 40px 36px;
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .funcion-card:hover { background: var(--negro-suave); }
+
+  .funcion-num {
+    font-family: var(--fuente-mono);
+    font-size: 11px;
+    color: var(--rojo);
+    letter-spacing: 0.1em;
+    margin-bottom: 24px;
+  }
+
+  .funcion-titulo {
+    font-family: var(--fuente-display);
+    font-weight: 800;
+    font-size: 28px;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 20px;
+    letter-spacing: 0.01em;
+  }
+
+  .funcion-desc {
+    color: var(--gris-claro);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .funcion-desc strong { color: var(--blanco-roto); font-weight: 600; }
+
+  .funcion-ejemplo {
+    margin-top: 24px;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.03);
+    border-left: 2px solid var(--rojo);
+    font-family: var(--fuente-mono);
+    font-size: 13px;
+    color: var(--gris-claro);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  /* ─── SECCIÓN HONESTIDAD ─── */
+  .seccion-honestidad {
+    padding: 100px 40px;
+    background: var(--negro-medio);
+  }
+
+  .honestidad-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .honestidad-izq {}
+
+  .honestidad-headline {
+    font-family: var(--fuente-display);
+    font-weight: 900;
+    font-size: clamp(34px, 4vw, 56px);
+    text-transform: uppercase;
+    line-height: 0.95;
+    margin-bottom: 28px;
+    letter-spacing: -0.01em;
+  }
+
+  .honestidad-intro {
+    color: var(--gris-claro);
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 32px;
+  }
+
+  .honestidad-intro strong { color: var(--blanco-roto); }
+
+  .limitaciones-lista {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .limitacion-item {
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .lim-icono {
+    width: 28px;
+    height: 28px;
+    background: rgba(230,51,41,0.1);
+    border: 1px solid rgba(230,51,41,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .lim-icono svg { width: 12px; height: 12px; }
+
+  .lim-texto {
+    font-size: 15px;
+    color: var(--gris-claro);
+    line-height: 1.6;
+  }
+
+  .lim-texto strong {
+    color: var(--blanco-roto);
+    display: block;
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 16px;
+  }
+
+  .honestidad-der {}
+
+  .promesa-box {
+    background: rgba(230,51,41,0.06);
+    border: 1px solid rgba(230,51,41,0.2);
+    padding: 36px;
+    margin-bottom: 24px;
+  }
+
+  .promesa-titulo {
+    font-family: var(--fuente-display);
+    font-weight: 800;
+    font-size: 22px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin-bottom: 16px;
+    color: var(--rojo);
+  }
+
+  .promesa-texto {
+    font-size: 15px;
+    color: var(--gris-claro);
+    line-height: 1.7;
+  }
+
+  .promesa-texto strong { color: var(--blanco-roto); }
+
+  /* ─── SECCIÓN RIGOR ─── */
+  .seccion-rigor {
+    padding: 100px 40px;
+    background: var(--negro);
+  }
+
+  .rigor-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .rigor-headline {
+    font-family: var(--fuente-display);
+    font-weight: 900;
+    font-size: clamp(36px, 4.5vw, 62px);
+    text-transform: uppercase;
+    line-height: 0.95;
+    margin-bottom: 64px;
+    letter-spacing: -0.01em;
+    max-width: 700px;
+  }
+
+  .reglas-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .regla-card {
+    background: var(--negro-medio);
+    padding: 36px;
+    border-top: 2px solid transparent;
+    transition: border-color 0.3s, background 0.2s;
+  }
+
+  .regla-card:hover {
+    border-top-color: var(--rojo);
+    background: var(--negro-suave);
+  }
+
+  .regla-num {
+    font-family: var(--fuente-display);
+    font-weight: 900;
+    font-size: 72px;
+    line-height: 0.85;
+    color: rgba(255,255,255,0.05);
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+  }
+
+  .regla-titulo {
+    font-family: var(--fuente-display);
+    font-weight: 800;
+    font-size: 22px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+  }
+
+  .regla-desc {
+    font-size: 15px;
+    color: var(--gris-claro);
+    line-height: 1.7;
+  }
+
+  .regla-desc strong { color: var(--blanco-roto); }
+
+  /* ─── SECCIÓN EMAIL ─── */
+  .seccion-email {
+    padding: 120px 40px;
+    background: var(--negro-medio);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .seccion-email::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    left: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(230,51,41,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .email-inner {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .email-headline {
+    font-family: var(--fuente-display);
+    font-weight: 900;
+    font-size: clamp(48px, 7vw, 88px);
+    text-transform: uppercase;
+    line-height: 0.9;
+    margin-bottom: 24px;
+    letter-spacing: -0.01em;
+  }
+
+  .email-headline span { color: var(--rojo); }
+
+  .email-sub {
+    font-size: 17px;
+    color: var(--gris-claro);
+    line-height: 1.7;
+    margin-bottom: 48px;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .email-sub strong { color: var(--blanco-roto); }
+
+  .email-form {
+    display: flex;
+    gap: 0;
+    max-width: 500px;
+    margin: 0 auto 20px;
+  }
+
+  .email-input {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-right: none;
+    color: var(--blanco-roto);
+    font-family: var(--fuente-cuerpo);
+    font-size: 16px;
+    padding: 16px 20px;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .email-input::placeholder { color: var(--gris-medio); }
+
+  .email-input:focus {
+    border-color: rgba(230,51,41,0.5);
+    background: rgba(255,255,255,0.08);
+  }
+
+  .email-btn {
+    background: var(--rojo);
+    color: var(--blanco);
+    font-family: var(--fuente-display);
+    font-weight: 700;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 16px 28px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+
+  .email-btn:hover { background: var(--rojo-oscuro); }
+
+  .email-nota {
+    font-family: var(--fuente-mono);
+    font-size: 11px;
+    color: var(--gris-medio);
+    letter-spacing: 0.04em;
+    line-height: 1.6;
+  }
+
+  /* ─── LECTURA TIEMPO ─── */
+.lectura-tiempo {
+  color: rgba(255,255,255,0.55);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  margin-left: 0.3em;
+}
+
+/* ─── DONACIONES ─── */
+.seccion-donaciones {
+  background: #0A0A0A;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 100px 40px;
+}
+.donaciones-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+.donaciones-headline {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  font-weight: 800;
+  line-height: 0.95;
+  text-transform: uppercase;
+  color: var(--blanco);
+  margin: 24px 0 28px;
+  letter-spacing: -0.01em;
+}
+.donaciones-headline span {
+  color: var(--rojo);
+}
+.donaciones-sub {
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  color: var(--gris-claro);
+  line-height: 1.65;
+  max-width: 640px;
+  margin: 0 auto 60px;
+}
+.costos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 60px;
+}
+@media (max-width: 768px) {
+  .costos-grid { grid-template-columns: 1fr; }
+}
+.costo-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 2px;
+  padding: 28px 24px;
+  text-align: left;
+}
+.costo-total {
+  border-color: rgba(230,51,41,0.2);
+  background: rgba(230,51,41,0.04);
+}
+.costo-label {
+  font-size: 0.72rem;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--gris-oscuro);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.costo-val {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--blanco);
+  margin-bottom: 8px;
+}
+.costo-val span {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--gris-claro);
+}
+.costo-nota {
+  font-size: 0.82rem;
+  color: var(--gris-oscuro);
+  line-height: 1.5;
+}
+
+.donaciones-acciones {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 32px;
+  align-items: start;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: left;
+}
+@media (max-width: 768px) {
+  .donaciones-acciones { grid-template-columns: 1fr; }
+  .donacion-separador { display: none; }
+}
+.donacion-bloque-titulo {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rojo);
+  margin-bottom: 12px;
+}
+.donacion-bloque-texto {
+  font-size: 0.9rem;
+  color: var(--gris-claro);
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+.btn-donacion {
+  display: inline-block;
+  background: var(--rojo);
+  color: var(--blanco);
+  padding: 13px 24px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  border-radius: 2px;
+  transition: background 0.2s;
+  margin-bottom: 10px;
+}
+.btn-donacion:hover { background: #c0392b; }
+.btn-donacion-outline {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: var(--blanco-roto);
+}
+.btn-donacion-outline:hover {
+  background: rgba(255,255,255,0.05);
+}
+.donacion-plataforma {
+  font-size: 0.72rem;
+  color: var(--gris-oscuro);
+  font-family: 'IBM Plex Mono', monospace;
+  line-height: 1.5;
+}
+.donacion-separador {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2rem;
+  color: var(--gris-oscuro);
+  padding-top: 60px;
+  text-align: center;
+}
+
+/* ─── FOOTER ─── */
+  footer {
+    background: var(--negro);
+    padding: 48px 40px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 40px;
+  }
+
+  .footer-logo {
+    font-family: var(--fuente-display);
+    font-weight: 900;
+    font-size: 26px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--blanco-roto);
+    margin-bottom: 8px;
+  }
+
+  .footer-logo span { color: var(--rojo); }
+
+  .footer-desc {
+    font-family: var(--fuente-mono);
+    font-size: 11px;
+    color: var(--gris-medio);
+    letter-spacing: 0.04em;
+    line-height: 1.7;
+    max-width: 280px;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-links a {
+    font-family: var(--fuente-mono);
+    font-size: 12px;
+    color: var(--gris-claro);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--rojo); }
+
+  .footer-bottom {
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .footer-bottom p {
+    font-family: var(--fuente-mono);
+    font-size: 11px;
+    color: var(--gris-medio);
+    letter-spacing: 0.04em;
+  }
+
+  .footer-version {
+    font-family: var(--fuente-mono);
+    font-size: 11px;
+    color: var(--gris-oscuro);
+    letter-spacing: 0.06em;
+  }
+
+  /* ─── ANIMACIONES ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .cursor-blink {
+    display: inline-block;
+    width: 3px;
+    height: 0.85em;
+    background: var(--rojo);
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+    margin-left: 4px;
+  }
+
+  /* Scroll reveal - visible by default, animated as enhancement */
+  .reveal {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal.animate-ready {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+    .reveal.animate-ready.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 20px 60px; }
+    .countdown-band { gap: 24px; flex-wrap: wrap; padding: 20px; }
+    .countdown-fecha { display: none; }
+    .seccion-dato, .seccion-que, .seccion-honestidad,
+    .seccion-rigor, .seccion-email { padding: 70px 20px; }
+    .funciones-grid, .reglas-grid { grid-template-columns: 1fr; }
+    .honestidad-inner { grid-template-columns: 1fr; gap: 48px; }
+    .email-form { flex-direction: column; }
+    .email-input { border-right: 1px solid rgba(255,255,255,0.12); }
+    .footer-inner { flex-direction: column; gap: 32px; }
+    .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+    .tabla-comp { font-size: 13px; }
+    .tabla-comp th, .tabla-comp td { padding: 10px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Igual<span>Votas</span></a>
+  <ul class="nav-links">
+    <li><a href="#limitaciones">Limitaciones</a></li>
+    <li><a href="#que-hacemos">Qué hacemos</a></li>
+    <li><a href="#apoyanos" class="nav-donar">Apoya el proyecto</a></li>
+    <li><a href="#registro" class="nav-cta">Regístrate</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-text" aria-hidden="true">VOTAS</div>
+  <div class="hero-inner">
+    <div class="hero-etiqueta">Elecciones intermedias · 6 de junio de 2027</div>
+
+    <h1 class="hero-headline">
+      <span class="palabra" style="animation-delay:0.2s">No te gusta<br></span>
+      <span class="palabra linea-roja" style="animation-delay:0.35s">la política.<br></span>
+      <span class="palabra linea-dim" style="animation-delay:0.5s">En junio votas<br></span>
+      <span class="palabra" style="animation-delay:0.65s">de todas formas.</span>
+    </h1>
+
+    <p class="hero-sub">
+      El 6 de junio de 2027 se renuevan <strong>500 diputados federales</strong>. Ellos van a decidir tu salario, tus impuestos, el agua de tu colonia y cuánto cuesta la gasolina.<br><br>
+      Lo harán mientras la mayoría de la gente que los eligió no sabe su nombre. <strong>Los políticos ya cuentan con eso.</strong>
+    </p>
+
+    <div class="hero-cta-group">
+      <a href="#registro" class="btn-primario">Quiero saber quién me representa</a>
+      <p class="hero-nota">Solo necesitas tu código postal<span class="cursor-blink"></span></p>
+    </div>
+  </div>
+</section>
+
+<!-- COUNTDOWN -->
+<div class="countdown-band">
+  <div class="countdown-label">Faltan para las intermedias</div>
+  <div class="countdown-nums">
+    <div class="countdown-item">
+      <span class="countdown-num" id="cd-dias">—</span>
+      <span class="countdown-unit">días</span>
+    </div>
+    <div class="countdown-sep">:</div>
+    <div class="countdown-item">
+      <span class="countdown-num" id="cd-horas">—</span>
+      <span class="countdown-unit">horas</span>
+    </div>
+    <div class="countdown-sep">:</div>
+    <div class="countdown-item">
+      <span class="countdown-num" id="cd-mins">—</span>
+      <span class="countdown-unit">minutos</span>
+    </div>
+  </div>
+  <div class="countdown-fecha">
+    Domingo 6 de junio, 2027
+    <small>Elecciones intermedias · México</small>
+  </div>
+</div>
+<!-- HONESTIDAD / LIMITACIONES -->
+<section class="seccion-honestidad" id="limitaciones">
+  <div class="honestidad-inner">
+    <div class="honestidad-izq">
+      <div class="seccion-etiqueta reveal"><span style="color:var(--rojo)">02</span> La parte incómoda <span class="lectura-tiempo">· 2 min</span></div>
+      <h2 class="honestidad-headline reveal">Antes de<br>mostrarte<br>lo que podemos<br>hacer.</h2>
+      <p class="honestidad-intro reveal">
+        Hay que decirte lo que <strong>no podemos hacer</strong>. No porque seamos malos en esto — sino porque el Congreso no está diseñado para que puedas ver lo que pasa adentro. Eso no es una opinión. Es una descripción técnica de cómo funciona su infraestructura de información.
+      </p>
+
+      <ul class="limitaciones-lista reveal">
+        <li class="limitacion-item">
+          <div class="lim-icono">
+            <svg viewBox="0 0 12 12" fill="none"><line x1="2" y1="2" x2="10" y2="10" stroke="#E63329" stroke-width="1.5"/><line x1="10" y1="2" x2="2" y2="10" stroke="#E63329" stroke-width="1.5"/></svg>
+          </div>
+          <div class="lim-texto">
+            <strong>Asistencia en tiempo real</strong>
+            El Congreso no tiene obligación de publicarla en formato legible. Solo en PDF, sin plazo definido.
+          </div>
+        </li>
+        <li class="limitacion-item">
+          <div class="lim-icono">
+            <svg viewBox="0 0 12 12" fill="none"><line x1="2" y1="2" x2="10" y2="10" stroke="#E63329" stroke-width="1.5"/><line x1="10" y1="2" x2="2" y2="10" stroke="#E63329" stroke-width="1.5"/></svg>
+          </div>
+          <div class="lim-texto">
+            <strong>Cómo votó exactamente tu diputado</strong>
+            El Reglamento no obliga a publicar el voto nominal individual en datos abiertos. La Cámara registra esa info internamente — simplemente elige no publicarla.
+          </div>
+        </li>
+        <li class="limitacion-item">
+          <div class="lim-icono">
+            <svg viewBox="0 0 12 12" fill="none"><line x1="2" y1="2" x2="10" y2="10" stroke="#E63329" stroke-width="1.5"/><line x1="10" y1="2" x2="2" y2="10" stroke="#E63329" stroke-width="1.5"/></svg>
+          </div>
+          <div class="lim-texto">
+            <strong>Cuánto gasta cada comisión y cada legislador</strong>
+            El Poder Legislativo tiene más discrecionalidad presupuestal que el propio Ejecutivo.
+          </div>
+        </li>
+        <li class="limitacion-item">
+          <div class="lim-icono">
+            <svg viewBox="0 0 12 12" fill="none"><line x1="2" y1="2" x2="10" y2="10" stroke="#E63329" stroke-width="1.5"/><line x1="10" y1="2" x2="2" y2="10" stroke="#E63329" stroke-width="1.5"/></svg>
+          </div>
+          <div class="lim-texto">
+            <strong>El texto de las leyes en formato buscable</strong>
+            Las iniciativas se presentan en PDF. No en un formato que permita búsqueda, comparación o análisis automático. Cada desarrollador o periodista que quiere trabajar con ese texto tiene que procesarlo manualmente.
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="honestidad-der reveal">
+      <div class="promesa-box">
+        <div class="promesa-titulo">Lo que sí podemos hacer</div>
+        <p class="promesa-texto">
+          Podemos decirte exactamente <strong>qué ley tendría que cambiar</strong> para que todo eso fuera posible — con el artículo y el reglamento exacto.<br><br>
+          Podemos construir <strong>la radiografía más completa del Congreso</strong> con los materiales que publica a regañadientes: extrayendo datos de PDFs cuando no hay nada mejor, construyendo la imagen más honesta posible de lo que ocurre adentro.<br><br>
+          Siempre será trabajo de arqueología, no de consulta en tiempo real. <strong>La diferencia entre una ley que existe y una ley que funciona es exactamente lo que este proyecto está aquí para mostrar.</strong>
+        </p>
+      </div>
+
+      <div class="promesa-box" style="background:rgba(255,255,255,0.02); border-color:rgba(255,255,255,0.08);">
+        <div class="promesa-titulo" style="color:var(--blanco-roto)">La resistencia no es técnica</div>
+        <p class="promesa-texto">
+          Estas reformas no requieren cambios constitucionales. Son modificaciones a leyes secundarias que el Congreso puede aprobar con mayoría simple.<br><br>
+          <strong>PRI, PAN, Morena, MC, PT, el Verde y todos los que existan y estén por formarse.</strong> Ninguno ha construido un congreso donde el ciudadano pueda ver lo que pasa adentro. Ninguno ha priorizado que eso cambie. Todos operan la misma maquinaria de opacidad — con diferente branding.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- DATO QUE INCOMODA -->
+<section class="seccion-dato">
+  <div class="dato-inner">
+    <div class="dato-etiqueta reveal"><span style="color:rgba(255,255,255,0.3)">03</span> El panorama mundial <span class="lectura-tiempo">· 3 min de lectura</span></div>
+    <h2 class="dato-headline reveal">
+      Tu banco sabe<br>
+      en qué gastas<br>
+      cada <span class="verde">peso.</span><br>
+      El Congreso no te dice<br>
+      cómo gastó <span class="rojo">el tuyo.</span>
+    </h2>
+    <p class="dato-sub reveal">
+      Quién falta. Quién vota siempre con su partido aunque contradiga lo que prometió en campaña. Quién propone leyes y quién solo ocupa la silla. Quién vota a favor de leyes que de repente le convienen muchísimo a ciertas empresas. Y en qué se va el dinero público que administran.<br><br>
+      Todo eso existe en documentos públicos. Enterrado en cientos de páginas de PDF por sesión, sin buscador, sin orden, sin forma de cruzar la información.<br><br>
+      A eso le llaman transparencia en el Congreso.
+    </p>
+
+    <div class="reveal">
+      <table class="tabla-comp">
+        <thead>
+          <tr>
+            <th>País</th>
+            <th>¿Puedes buscar cómo votó tu representante?</th>
+            <th>¿Lo sabes el mismo día?</th>
+            <th>¿Ves en qué se gasta?</th>
+            <th>¿Puedes opinar formalmente?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="pais-ref">
+            <td><span class="flag">🇲🇽</span><span class="pais-nombre">México</span></td>
+            <td><span class="badge badge-no">PDFs sin buscador</span></td>
+            <td><span class="badge badge-no">No disponible</span></td>
+            <td><span class="badge badge-parcial">Parcial</span></td>
+            <td><span class="badge badge-no">Sin canal formal</span></td>
+          </tr>
+          <tr>
+            <td><span class="flag">🇧🇷</span><span class="pais-nombre">Brasil</span></td>
+            <td><span class="badge badge-si">Consulta en segundos</span></td>
+            <td><span class="badge badge-si">Al momento</span></td>
+            <td><span class="badge badge-si">Desglose completo</span></td>
+            <td><span class="badge badge-si">Plataforma activa</span></td>
+          </tr>
+          <tr>
+            <td><span class="flag">🇪🇪</span><span class="pais-nombre">Estonia</span></td>
+            <td><span class="badge badge-si">Consulta en segundos</span></td>
+            <td><span class="badge badge-si">Minutos tras sesión</span></td>
+            <td><span class="badge badge-si">Datos abiertos</span></td>
+            <td><span class="badge badge-si">Con 1,000 firmas</span></td>
+          </tr>
+          <tr>
+            <td><span class="flag">🇬🇧</span><span class="pais-nombre">Reino Unido</span></td>
+            <td><span class="badge badge-si">Consulta en segundos</span></td>
+            <td><span class="badge badge-si">Por sesión</span></td>
+            <td><span class="badge badge-si">Desglose por legislador</span></td>
+            <td><span class="badge badge-si">Cualquier ciudadano lo consulta</span></td>
+          </tr>
+          <tr>
+            <td><span class="flag">🇨🇱</span><span class="pais-nombre">Chile</span></td>
+            <td><span class="badge badge-si">Consulta en segundos</span></td>
+            <td><span class="badge badge-si">Por votación</span></td>
+            <td><span class="badge badge-parcial">En expansión</span></td>
+            <td><span class="badge badge-si">Portal ciudadano</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="fuente-nota">Fuente: IPU World e-Parliament Report 2024 · Survey de 115 cámaras en 86 países</p>
+    </div>
+  </div>
+</section>
+
+<!-- QUÉ HACEMOS -->
+<section class="seccion-que" id="que-hacemos">
+  <div class="que-inner">
+    <div class="seccion-etiqueta reveal"><span style="color:var(--gris-oscuro)">04</span> Qué es Igual Votas <span class="lectura-tiempo">· 2 min</span></div>
+    <h2 class="que-headline reveal">Tres cosas que<br>este proyecto<br>hace por ti.</h2>
+
+    <div class="funciones-grid">
+      <div class="funcion-card reveal">
+        <div class="funcion-num">01 — Portal de rendición de cuentas</div>
+        <h3 class="funcion-titulo">Quién te<br>representa</h3>
+        <p class="funcion-desc">Pon tu código postal. Te decimos quién es tu diputado, cuánto tiempo lleva en el cargo, cuántas iniciativas ha presentado, y cómo ha votado en los temas que te afectan directamente. <strong>Sin jerga. Con metodología pública que cualquiera puede auditar.</strong></p>
+        <div class="funcion-ejemplo">"Mi diputado lleva 9 años en el cargo y ha presentado 3 iniciativas. Sus pares promedio presentan 12."</div>
+      </div>
+      <div class="funcion-card reveal" style="transition-delay:0.1s">
+        <div class="funcion-num">02 — Analizador de iniciativas</div>
+        <h3 class="funcion-titulo">Qué dice<br>realmente<br>esa ley</h3>
+        <p class="funcion-desc">Cuando hay una iniciativa viva en el Congreso, la diseccionamos: qué dice, a quién beneficia, qué pasó en los países donde se intentó algo similar. <strong>Cada dato te lleva directo al párrafo exacto — no a la portada de un PDF de 267 páginas donde tendrías que buscarlo tú.</strong></p>
+        <div class="funcion-ejemplo">"Esta iniciativa beneficia directamente a 4 gremios. El texto tiene 3 huecos que la hacen no ejecutable."</div>
+      </div>
+      <div class="funcion-card reveal" style="transition-delay:0.2s">
+        <div class="funcion-num">03 — Motor de propuesta ciudadana</div>
+        <h3 class="funcion-titulo">Lo que<br>quieres<br>ver distinto</h3>
+        <p class="funcion-desc">Escribe lo que quieres ver diferente en tu vida. Igual Votas lo traduce a realidad: qué artículo lo regula, qué presupuesto implica, quién tiene que moverlo, y qué tan lejos está ese legislador de hacerlo. <strong>El deseo vago se convierte en conocimiento accionable.</strong></p>
+        <div class="funcion-ejemplo">"Quiero que arreglen las calles de mi colonia." → Aquí está quien decide, cuánto hay, y qué ha hecho.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RIGOR -->
+<section class="seccion-rigor">
+  <div class="rigor-inner">
+    <div class="seccion-etiqueta reveal"><span style="color:var(--gris-oscuro)">05</span> Cómo lo hacemos <span class="lectura-tiempo">· 1 min</span></div>
+    <h2 class="rigor-headline reveal">Tres reglas que<br>no negociamos.</h2>
+
+    <div class="reglas-grid">
+      <div class="regla-card reveal">
+        <div class="regla-num">01</div>
+        <h3 class="regla-titulo">La fuente te lleva<br>al dato exacto</h3>
+        <p class="regla-desc">Cada afirmación te lleva directo al párrafo exacto donde está la información anclada al <strong>fragmento exacto</strong> del documento original. No al PDF de 267 páginas — al párrafo. Si la fuente no existe, la afirmación tampoco.</p>
+      </div>
+      <div class="regla-card reveal" style="transition-delay:0.1s">
+        <div class="regla-num">02</div>
+        <h3 class="regla-titulo">El mismo rasero<br>para todos</h3>
+        <p class="regla-desc"><strong>PRI, PAN, Morena, MC, PT, el Verde y todos los que existan y estén por formarse.</strong> Nadie recibe trato diferenciado. La métrica es siempre ciudadana, nunca ideológica. El criterio: desempeño medible, votaciones registradas, dinero público administrado.</p>
+      </div>
+      <div class="regla-card reveal" style="transition-delay:0.2s">
+        <div class="regla-num">03</div>
+        <h3 class="regla-titulo">Crítica más<br>propuesta siempre</h3>
+        <p class="regla-desc">Señalar lo que está mal sin decir cómo debería estar bien es periodismo, no laboratorio. <strong>Siempre que criticamos una iniciativa, también articulamos la alternativa</strong> — con evidencia de dónde ha funcionado.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DONACIONES -->
+<section class="seccion-donaciones" id="apoyanos">
+  <div class="donaciones-inner">
+    <div class="seccion-etiqueta reveal" style="justify-content:center"><span style="color:var(--gris-oscuro)">06</span> Transparencia sobre lo nuestro</div>
+    <h2 class="donaciones-headline reveal">Este proyecto<br>nos cuesta.<br><span>Lo decimos sin rodeos.</span></h2>
+    <p class="donaciones-sub reveal">
+      El motor que traduce tu pregunta en análisis legislativo real requiere inteligencia artificial en tiempo real. Eso no es gratis. Lo que sí es gratis: el tiempo de las personas que lo construyen. La investigación. El diseño. Todo eso es voluntario. Lo que no puede serlo es la infraestructura que lo hace funcionar.
+    </p>
+
+    <div class="costos-grid reveal">
+      <div class="costo-card">
+        <div class="costo-label">Motor de inteligencia artificial</div>
+        <div class="costo-val">$34–$342 <span>USD / mes</span></div>
+        <div class="costo-nota">Escala con el número de consultas. Fase 1: 1,000 usuarios. Fase 2: 10,000.</div>
+      </div>
+      <div class="costo-card">
+        <div class="costo-label">Infraestructura y servidores</div>
+        <div class="costo-val">$112 <span>USD / mes</span></div>
+        <div class="costo-nota">Hosting, base de datos, extracción de documentos legislativos, dominio.</div>
+      </div>
+      <div class="costo-card costo-total">
+        <div class="costo-label">Año 1 completo estimado</div>
+        <div class="costo-val" style="color:var(--rojo)">$4,519 <span>USD</span></div>
+        <div class="costo-nota">~$83,600 MXN. Sin nómina. Sin oficina. Solo operación del producto.</div>
+      </div>
+    </div>
+
+    <div class="donaciones-acciones reveal">
+      <div class="donacion-bloque">
+        <div class="donacion-bloque-titulo">Si eres ciudadano</div>
+        <p class="donacion-bloque-texto">Cualquier aportación ayuda a que este proyecto no dependa de nadie con agenda. No hay monto mínimo ni máximo. No hay membresías ni beneficios exclusivos — solo un proyecto que funciona.</p>
+        <a href="#" class="btn-donacion">Apoyar con donación directa</a>
+        <p class="donacion-plataforma">Vía Open Collective · Sin intermediarios con agenda</p>
+      </div>
+      <div class="donacion-separador">o</div>
+      <div class="donacion-bloque">
+        <div class="donacion-bloque-titulo">Si representas una organización</div>
+        <p class="donacion-bloque-texto">Buscamos grants de fundaciones de sociedad civil, organizaciones de periodismo de datos y mecanismos públicos de financiamiento para proyectos de democracia digital. No aceptamos dinero de empresas privadas ni de organizaciones con intereses ante el Congreso.</p>
+        <a href="/cdn-cgi/l/email-protection#22414d4c564341564d624b4557434e544d5643510c4f5a" class="btn-donacion btn-donacion-outline">Ver brief para otorgadores de fondos</a>
+        <p class="donacion-plataforma">NED · Open Society · Mozilla Foundation · INAI PROTAI · ICFJ</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EMAIL CAPTURE -->
+<section class="seccion-email" id="registro">
+  <div class="email-inner">
+    <div class="seccion-etiqueta reveal" style="justify-content:center"><span style="color:rgba(255,255,255,0.15)">07</span>&nbsp; Únetenos</div>
+    <h2 class="email-headline reveal">
+      Estamos<br>construyendo<br><span>esto.</span>
+    </h2>
+    <p class="email-sub reveal">
+      Cuando lancemos el primer análisis — un perfil legislativo, una iniciativa activa, un diagnóstico presupuestal — te llegará directamente. <strong>Sin spam. Sin comunicados de prensa. Solo análisis que vale la pena leer y compartir.</strong>
+    </p>
+
+    <div class="email-form reveal">
+      <input type="email" class="email-input" placeholder="tu@correo.com">
+      <button class="email-btn">Quiero estar adentro</button>
+    </div>
+
+    <p class="email-nota reveal">
+      No compartimos tu email con nadie. No tenemos anunciantes.<br>
+      No aceptamos financiamiento corporativo. Solo ciudadanos que quieren ver el Congreso por dentro.
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">Igual<span>Votas</span></div>
+      <p class="footer-desc">
+        Monitor Legislativo Ciudadano · Laboratorio Jurídico y Diseño Ciudadano<br><br>
+        Metodología pública. Sin anunciantes. Sin financiamiento corporativo. Si algo está mal en este análisis, queremos saberlo — con la misma evidencia con la que nosotros trabajamos.
+      </p>
+    </div>
+    <div class="footer-links">
+      <a href="#">Documento rector</a>
+      <a href="#">Diagnóstico de limitaciones</a>
+      <a href="#">Metodología de calificación</a>
+      <a href="#">Contacto</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Igual Votas · igualvotas.mx</p>
+    <span class="footer-version">v1.0 · Febrero 2026</span>
+  </div>
+</footer>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+  // ─── COUNTDOWN ───
+  function updateCountdown() {
+    const target = new Date('2027-06-06T08:00:00-06:00');
+    const now = new Date();
+    const diff = target - now;
+
+    if (diff <= 0) {
+      document.getElementById('cd-dias').textContent = '0';
+      document.getElementById('cd-horas').textContent = '0';
+      document.getElementById('cd-mins').textContent = '0';
+      return;
+    }
+
+    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+    document.getElementById('cd-dias').textContent = String(dias).padStart(3, '0');
+    document.getElementById('cd-horas').textContent = String(horas).padStart(2, '0');
+    document.getElementById('cd-mins').textContent = String(mins).padStart(2, '0');
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 30000);
+
+  // ─── SCROLL REVEAL ───
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(el => {
+      if (el.isIntersecting) el.target.classList.add('visible');
+    });
+  }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+
+  // Add animate-ready after load so content is never hidden if JS fails
+  setTimeout(() => {
+    document.querySelectorAll('.reveal').forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top > window.innerHeight) {
+        el.classList.add('animate-ready');
+      } else {
+        el.classList.add('visible');
+      }
+      observer.observe(el);
+    });
+  }, 100);
+
+  window.addEventListener('scroll', function() {
+    document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
+      if (el.getBoundingClientRect().top < window.innerHeight * 1.1) el.classList.add('visible');
+    });
+  }, { passive: true });
+
+  // ─── EMAIL FORM ───
+  document.querySelector('.email-btn').addEventListener('click', function() {
+    const input = document.querySelector('.email-input');
+    if (input.value && input.value.includes('@')) {
+      this.textContent = '✓ Registrado';
+      this.style.background = '#2D7A4F';
+      input.disabled = true;
+         this.disabled = true;
+    }
+  });
+
+  }); // DOMContentLoaded
+</script>
+</body>
+</html>
