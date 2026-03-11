@@ -1,26 +1,76 @@
 @import "tailwindcss";
 
+@theme {
+  --color-rojo: #E63329;
+  --color-rojo-oscuro: #B5251B;
+  --color-negro: #0D0D0D;
+  --color-negro-medio: #1A1A1A;
+  --color-negro-suave: #252525;
+  --color-gris-oscuro: #3A3A3A;
+  --color-gris-medio: #6B6B6B;
+  --color-gris-claro: #A0A0A0;
+  --color-blanco-roto: #F0EDE8;
+  --color-blanco: #FFFFFF;
+  --color-amarillo: #F5C842;
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-negro);
+  color: var(--color-blanco-roto);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ─── GRAIN OVERLAY ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* Custom Utilities for Hero */
+.text-stroke-bg {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.04);
+}
+
+.clip-button {
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-fade-up {
+  opacity: 0;
+  animation: fadeUp ease forwards;
+}
+
+.animate-blink {
+  animation: blink 1s step-end infinite;
 }
