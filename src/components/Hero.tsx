@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { SeccionForm } from './SeccionForm';
 
 export function Hero() {
   return (
@@ -34,20 +34,11 @@ export function Hero() {
           Lo harán mientras la mayoría de la gente que los eligió no sabe su nombre. <strong className="text-blanco-roto font-semibold">Los políticos ya cuentan con eso.</strong>
         </p>
 
-        <div 
-          className="flex items-center gap-5 flex-wrap animate-fade-up"
+        <div
+          className="animate-fade-up"
           style={{ animationDuration: '0.6s', animationDelay: '0.9s' }}
         >
-          <Link 
-            href="#registro" 
-            className="bg-rojo text-blanco font-display font-bold text-lg uppercase tracking-[0.06em] px-9 py-4 transition-all hover:bg-rojo-oscuro hover:-translate-y-0.5 clip-button inline-block"
-          >
-            Quiero saber quién me representa
-          </Link>
-          <p className="font-mono text-xs text-gris-medio tracking-[0.04em]">
-            Solo necesitas tu código postal
-            <span className="inline-block w-[3px] h-[0.85em] bg-rojo align-middle animate-blink ml-1"></span>
-          </p>
+          <SeccionForm />
         </div>
       </div>
     </section>

@@ -25,7 +25,7 @@ export function QueHacemos() {
                 Quién te<br/>representa
               </h3>
               <p className="text-gris-claro text-[15px] leading-[1.7] flex-1">
-                Pon tu código postal. Te decimos quién es tu diputado, cuánto tiempo lleva en el cargo, cuántas iniciativas ha presentado, y cómo ha votado en los temas que te afectan directamente. <strong className="text-blanco-roto font-semibold">Sin jerga. Con metodología pública que cualquiera puede auditar.</strong>
+                Pon tu número de sección electoral. Te decimos quién es tu diputado, cuánto tiempo lleva en el cargo, cuántas iniciativas ha presentado, y cómo ha votado en los temas que te afectan directamente. <strong className="text-blanco-roto font-semibold">Sin jerga. Con metodología pública que cualquiera puede auditar.</strong>
               </p>
               <div className="mt-6 p-3.5 bg-white/5 border-l-2 border-rojo font-mono text-[13px] text-gris-claro italic leading-[1.5]">
                 &quot;Mi diputado lleva 9 años en el cargo y ha presentado 3 iniciativas. Sus pares promedio presentan 12.&quot;
