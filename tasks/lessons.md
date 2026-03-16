@@ -7,27 +7,31 @@
 - **Síntoma:** Vercel muestra deployment "Ready" o "Error" pero la URL sirve `404: NOT_FOUND`
 - **Causa Raíz:** El `project.json` de Vercel tiene `"framework": null`. Vercel no detecta Next.js automáticamente y no sabe cómo servir la app. El deploy via git push queda roto.
 
-## 🛠️ Solución — protocolo obligatorio cada vez que el sitio caiga así
+## 🔧 Fix permanente (hacer UNA VEZ si el proyecto se recrea en Vercel)
+En el dashboard: `igual-votas-mx` → Settings → **Build and Deployment** → **Framework Preset** → seleccionar **Next.js** → Save.
+Sin esto, Vercel no detecta Next.js y todos los deploys quedan rotos aunque digan "Ready".
+
+## 🛠️ Protocolo de deploy — usar SIEMPRE (no solo git push)
 
 ```bash
 # Desde la raíz del proyecto (donde está next.config.ts)
 rm -rf .vercel/output
-~/.npm-global/bin/vercel pull --yes          # sincroniza project settings
-~/.npm-global/bin/vercel build --prod        # build local — fuerza detección de Next.js
-~/.npm-global/bin/vercel deploy --prebuilt --prod   # sube el artefacto ya compilado
+~/.npm-global/bin/vercel pull --yes                 # sincroniza project settings
+~/.npm-global/bin/vercel build --prod               # build local con Next.js
+~/.npm-global/bin/vercel deploy --prebuilt --prod   # sube artefacto compilado
 ```
 
-Si `vercel` no está disponible: `npm i -g vercel --prefix ~/.npm-global`
+Si `vercel` no está: `npm i -g vercel --prefix ~/.npm-global`
 
 ## ⚠️ Por qué el git push solo no es suficiente
-El push a GitHub dispara el build de Vercel en la nube. Pero si `framework: null`
-en la config del proyecto, el build en la nube falla silenciosamente o sirve basura.
-El deploy prebuilt salta ese problema porque le mandas el artefacto ya compilado.
+El push dispara el build en la nube de Vercel. Ese build usa los settings del proyecto.
+Si `Framework Preset = null`, el build en la nube no detecta Next.js → 404.
+El deploy prebuilt bypasea eso porque le mandas el artefacto ya compilado localmente.
 
 ## 📋 Checklist antes de dar por terminado un deploy
-- [ ] `igual-votas-mx.vercel.app` carga la landing (no 404, no blank)
-- [ ] El formulario de sección aparece en el Hero
-- [ ] `.vercel/project.json` tiene `"framework": null` — **es normal**, el CLI lo maneja igual
+- [ ] `igual-votas-mx.vercel.app` responde 200 (no 404)
+- [ ] La landing carga visualmente con el formulario de sección en el Hero
+- [ ] Framework Preset en Vercel dashboard está en **Next.js** (verificar si el proyecto se recrea)
 
 ## ⚠️ Sobre `scripts/` y el tsconfig (2026-03-15)
 - `scripts/seed-distritos.ts` usa `@neondatabase/serverless` y `drizzle-orm`
